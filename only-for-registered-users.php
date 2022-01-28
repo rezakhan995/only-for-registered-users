@@ -3,7 +3,7 @@
 /**
  * Plugin Name:     Only For Registered Users
  * Plugin URI:      https://wordpress.org/plugins/only-for-registered-users/
- * Description:     Redirects all non-logged in users to your website's login form. Make sure to <a href="options-general.php?page=registered-users-only">disable registration</a> if you want your blog truly private.
+ * Description:     Redirects all non-logged in users to your website's login form. 
  * Version:         1.0.0
  * Author:          Reza Khan
  * Author URI:      https://www.reza-khan.com/
