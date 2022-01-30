@@ -1,15 +1,15 @@
 <?php
 
 /**
- * Plugin Name:     Only For Registered Users
- * Plugin URI:      https://wordpress.org/plugins/only-for-registered-users/
+ * Plugin Name:     Only Registered Users
+ * Plugin URI:      https://wordpress.org/plugins/only-registered-users/
  * Description:     Redirects all non-logged in users to your website's login form. 
  * Version:         1.0.0
  * Author:          Reza Khan
  * Author URI:      https://www.reza-khan.com/
  * License:         GPL-2.0+
  * License URI:     http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:     only-for-registered-users
+ * Text Domain:     only-registered-users
  * Domain Path:     /languages
  */
 
@@ -36,7 +36,7 @@ class Ofrusers {
     }
 
     public function i18n(){
-        load_plugin_textdomain('only-for-registered-users', false, self::plugin_dir() . 'languages/');
+        load_plugin_textdomain('only-registered-users', false, self::plugin_dir() . 'languages/');
     }
 
     /**
