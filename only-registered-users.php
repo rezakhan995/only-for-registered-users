@@ -45,6 +45,7 @@ class Ofrusers {
      * @since 1.0.0
      */
     public function initialize_modules(){
+
         do_action( 'ofrusers/before_load' );
         
         require_once self::core_dir() . 'bootstrap.php';
@@ -70,6 +71,28 @@ class Ofrusers {
      */
     public static function version(){
         return '1.0.0';
+    }
+
+    /**
+     * Core Url
+     * 
+     * @since 1.0.0
+     *
+     * @return string
+     */
+    public static function assets_url(){
+        return trailingslashit( self::plugin_url() . 'assets' );
+    }
+
+    /**
+     * Core Directory Path
+     * 
+     * @since 1.0.0
+     *
+     * @return string
+     */
+    public static function assets_dir(){
+        return trailingslashit( self::plugin_dir() . 'assets' );
     }
 
     /**

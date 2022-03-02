@@ -6,6 +6,9 @@ class Ofrusers_Bootstrap {
 
     // Class initialization
     function __construct() {
+        //register all styles and scripts
+        add_action( 'admin_enqueue_scripts', [$this, 'js_css_admin'] );
+
         // Register our hooks
         add_action( 'wp', [ $this, 'redirect_to_login_or_not' ] );
         
@@ -15,10 +18,28 @@ class Ofrusers_Bootstrap {
 
         add_action( 'init', [ $this, 'login_form_custom_msg' ] );
 
-        if ( isset( $_POST['ofrusers_action'] ) && 'update' == $_POST['ofrusers_action'] ) {
+        $post_arr = filter_input_array( INPUT_POST, FILTER_SANITIZE_STRING );
+
+        if ( isset( $post_arr['ofrusers_action'] ) && 'update' == $post_arr['ofrusers_action'] ) {
             add_action( 'init', [ $this, 'handle_settings' ] );
         }
 
+    }
+
+
+    public function js_css_admin() {
+
+        // get screen id
+        $screen    = get_current_screen();
+        $screen_id = $screen->id;
+
+        $allowed_screen_ids = [
+            'settings_page_only-registered-users',
+        ];
+
+        if( in_array($screen_id, $allowed_screen_ids) ){
+            wp_enqueue_style( 'ofrusers-admin', \Ofrusers::assets_url() . 'css/admin.css', [], \Ofrusers::version(), 'all' );
+        }
     }
 
     // Depending on conditions, check if we need to run an authentication check
@@ -79,68 +100,11 @@ class Ofrusers_Bootstrap {
 
         $default_user_msg   = esc_html__( 'Only registered and logged in users are allowed to view the content you are trying to access. Please log in first.', 'only-registered-users' );
         $user_msg           = empty($settings['ofrusers_msg']) ? $default_user_msg: $settings['ofrusers_msg'];
-        ?>
-		<div class="ofrusers wrap">
-			<h2>
-                <?php echo esc_html__( 'Only For Registered Users', 'only-registered-users' );?>
-            </h2>
-
-			<form method="post" action="">
-
-				<?php wp_nonce_field( 'only-registered-users' )?>
-
-				<table class="ofrusers form-table">
-					<tr valign="top">
-						<th scope="row">
-                            <?php echo esc_html__( 'Default Membership Settings', 'only-registered-users' );?>
-                        </th>
-						<td>
-							<label for="users_can_register">
-								<input name="users_can_register" type="checkbox" id="users_can_register" value="1"<?php checked( '1', get_option( 'users_can_register' ) );?> />
-								<?php echo esc_html__( 'Anyone can register', 'only-registered-users' )?>
-							</label>
-                            <br />
-							<?php echo esc_html__( 'This is a default WordPress option placed here for easy changing.', 'only-registered-users' );?>
-						</td>
-					</tr>
-					<tr valign="top">
-                        <th scope="row">
-                            <?php echo esc_html__( 'Allow Guest Access', 'only-registered-users' );?>
-                        </th>
-                        <td>
-                            <label for="ofrusers_feeds">
-                                <input name="ofrusers_feeds" type="checkbox" id="ofrusers_feeds" value="1"<?php checked( '1', !empty( $settings['ofrusers_feeds'] ) );?> />
-                                <?php echo esc_html__( 'Allow access to your post and comment rss feeds (Warning: this will reveal all post contents to guests!)', 'only-registered-users' );?>
-                            </label>
-                            <br />
-                            <label for="ofrusers_rest">
-                                <input name="ofrusers_rest" type="checkbox" id="ofrusers_rest" value="1"<?php checked( '1', !empty( $settings['ofrusers_rest'] ) );?> />
-                                <?php echo esc_html__( 'Allow access to your REST API\'s (Warning: this will reveal all post contents to guests!)', 'only-registered-users' );?>
-                            </label>
-                            <br/>
-                        </td>
-                    </tr>
-					<tr valign="top">
-						<th scope="row">
-                            <?php echo esc_html__( 'Login Form Message', 'only-registered-users' );?>
-                        </th>
-						<td>
-							<label for="ofrusers_msg">
-								<textarea name="ofrusers_msg" id="ofrusers_msg" rows="5" col='5'><?php echo esc_html( $user_msg );?></textarea>
-								<br>
-                                <?php echo esc_html__( 'This message will be shown on the login form once user is redirected to login window', 'only-registered-users' );?>
-							</label>
-						</td>
-					</tr>
-				</table>
-
-				<p class="ofrusers submit">
-					<?php submit_button();?>
-					<input type="hidden" name="ofrusers_action" value="update" />
-				</p>
-			</form>
-		</div>
-		<?php
+        
+        $settings_template  = Ofrusers::plugin_dir() . 'templates/settings.php';
+        if( file_exists($settings_template) ){
+            include $settings_template;
+        }
 	}
 
 	// Just a pretty message for users
@@ -166,17 +130,19 @@ class Ofrusers_Bootstrap {
             wp_die( __( 'No direct access!!!' ) );
         }
 
+        $post_arr = filter_input_array( INPUT_POST, FILTER_SANITIZE_STRING );
+
         check_admin_referer( 'only-registered-users' );
 
         $settings = [
-            'ofrusers_feeds' => ( !empty( $_POST['ofrusers_feeds'] ) ) ? 1 : 0,
-            'ofrusers_rest'  => ( !empty( $_POST['ofrusers_rest'] ) ) ? 1 : 0,
-            'ofrusers_msg'   => ( !empty( $_POST['ofrusers_msg'] ) ) ? $_POST['ofrusers_msg'] : '',
+            'ofrusers_feeds' => ( !empty( $post_arr['ofrusers_feeds'] ) ) ? 1 : 0,
+            'ofrusers_rest'  => ( !empty( $post_arr['ofrusers_rest'] ) ) ? 1 : 0,
+            'ofrusers_msg'   => ( !empty( $post_arr['ofrusers_msg'] ) ) ? $post_arr['ofrusers_msg'] : '',
         ];
 
         update_option( 'only-registered-users', $settings );
 
-        update_option( 'users_can_register', ( !empty( $_POST['users_can_register'] ) ) ? 1 : 0 );
+        update_option( 'users_can_register', ( !empty( $post_arr['users_can_register'] ) ) ? 1 : 0 );
 
         wp_redirect( add_query_arg( 'updated', 'true' ) );
 

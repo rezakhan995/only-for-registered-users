@@ -1,0 +1,46 @@
+.ofrusers-settings-wrap{
+    background-color: #F7FAFC;
+    border: 1px solid #85CE61;
+    border-radius: 5px;
+    margin: 20px 20px 20px 0;
+    width: 100%;
+}
+
+.ofrusers-settings-wrap h2{
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0px;
+    padding: 30px;
+}
+
+.ofrusers-settings-divider{
+    border-bottom: 1px solid #85CE61;
+    width: 100%;
+    height: 1px;
+}
+.ofrusers-settings-form{
+    padding: 0px 30px;
+    color: #2f2925;
+    font-weight: 400;
+    font-size: 14px;
+}
+.ofrusers-settings-form #submit{
+    border: 1px solid #67c23a;
+    background-color: #67c23a;
+    color: #fff;
+    font-weight: 600;
+}
+.ofrusers-settings-form #submit:hover{
+    border: 1px solid #85CE61;
+    background-color: #85CE61;
+}
+
+.ofrusers-settings-form .ofrusers-settings-label-desc{
+    font-size: 12px;
+    font-style: italic;
+    color: #6d6b68;
+}
+
+.ofrusers-settings-form textarea{
+    width: 100%;
+}
